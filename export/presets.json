@@ -1,0 +1,31 @@
+[
+  {
+    "name": "untitled",
+    "preset": {
+      "__sps": {
+        "freq-conversion": {},
+        "freq-conversion[1]": {},
+        "freq-conversion[2]": {},
+        "old-magic-number-tuning-system": {}
+      },
+      "attack": {
+        "value": 23.2
+      },
+      "decay": {
+        "value": 0
+      },
+      "release": {
+        "value": 0
+      },
+      "secondPartialDecay": {
+        "value": 3
+      },
+      "sustain": {
+        "value": 0.46
+      },
+      "thirdPartialDecay": {
+        "value": 6
+      }
+    }
+  }
+]
