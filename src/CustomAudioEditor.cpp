@@ -13,14 +13,14 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
     _titleLabel.setText("Crystallophon v.0.1", juce::dontSendNotification);
     _titleLabel.setJustificationType(juce::Justification::centredTop);
     _titleLabel.setFont(juce::Font(20.0f, juce::Font::bold));
-    _titleLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    _titleLabel.setColour(juce::Label::textColourId, juce::Colours::purple);
     addAndMakeVisible(_titleLabel);
 
     // --- Creator Label ---
     _creatorLabel.setText("esmw 2025", juce::dontSendNotification);
     _creatorLabel.setJustificationType(juce::Justification::centredTop);
     _creatorLabel.setFont(juce::Font(14.0f, juce::Font::bold));
-    _creatorLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    _creatorLabel.setColour(juce::Label::textColourId, juce::Colours::purple);
     addAndMakeVisible(_creatorLabel);
 
     // --- GUI Elements ---
@@ -28,7 +28,7 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
     // --- Attack ---
     _attackSlider.setSliderStyle(juce::Slider::LinearHorizontal);
     _attackSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
-    _attackSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
+    _attackSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::purple);
     _attackSlider.setRange(0.10, 2000.0, 0.01);
     _attackSlider.setValue(0.10);
     _attackSlider.onValueChange = [this]() {
@@ -41,7 +41,7 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
     _attackLabel.setText("Attack (ms)", juce::NotificationType::dontSendNotification);
     _attackLabel.attachToComponent(&_attackSlider, true);
     addAndMakeVisible(_attackLabel);
-    _attackLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    _attackLabel.setColour(juce::Label::textColourId, juce::Colours::purple);
 
     // --- Decay ---
     _decaySlider.setSliderStyle(juce::Slider::LinearHorizontal);
@@ -53,13 +53,11 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
             _rnboObject.setParameterValue(index, (float)_decaySlider.getValue());
         }
         };
-    _decaySlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
-    _decaySlider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::white);
-    _decaySlider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::grey);
+    _decaySlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::purple);
     addAndMakeVisible(_decaySlider);
 
     _decayLabel.setText("Decay (ms)", juce::dontSendNotification);
-    _decayLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    _decayLabel.setColour(juce::Label::textColourId, juce::Colours::purple);
     _decayLabel.attachToComponent(&_decaySlider, true);
     addAndMakeVisible(_decayLabel);
 
@@ -73,13 +71,11 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
             _rnboObject.setParameterValue(index, (float)_sustainSlider.getValue());
         }
         };
-    _sustainSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
-    _sustainSlider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::white);
-    _sustainSlider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::grey);
+    _sustainSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::purple);
     addAndMakeVisible(_sustainSlider);
 
     _sustainLabel.setText("Sustain (gain)", juce::dontSendNotification);
-    _sustainLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    _sustainLabel.setColour(juce::Label::textColourId, juce::Colours::purple);
     _sustainLabel.attachToComponent(&_sustainSlider, true);
     addAndMakeVisible(_sustainLabel);
 
@@ -93,19 +89,17 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
             _rnboObject.setParameterValue(index, (float)_releaseSlider.getValue());
         }
         };
-    _releaseSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
-    _releaseSlider.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::white);
-    _releaseSlider.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::grey);
+    _releaseSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::purple);
     addAndMakeVisible(_releaseSlider);
 
     _releaseLabel.setText("Release (ms)", juce::dontSendNotification);
-    _releaseLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    _releaseLabel.setColour(juce::Label::textColourId, juce::Colours::purple);
     _releaseLabel.attachToComponent(&_releaseSlider, true);
     addAndMakeVisible(_releaseLabel);
 
     // --- Partial Mode Label ---
     _partialModeLabel.setText("Partial Mode", juce::dontSendNotification);
-    _partialModeLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    _partialModeLabel.setColour(juce::Label::textColourId, juce::Colours::purple);
     addAndMakeVisible(_partialModeLabel);
 
     _partialModeIndex = _rnboObject.getParameterIndexForID("partialMode");
@@ -122,16 +116,17 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
         };
     addAndMakeVisible(_partialModeComboBox);
 
-    // Look And Feel
-    _attackSlider.setLookAndFeel(&facetedLookAndFeel);
-    _decaySlider.setLookAndFeel(&facetedLookAndFeel);
-    _sustainSlider.setLookAndFeel(&facetedLookAndFeel);
-    _releaseSlider.setLookAndFeel(&facetedLookAndFeel);
+    // --- 
 
-    facetedLookAndFeel.registerSlider(&_attackSlider);
-    facetedLookAndFeel.registerSlider(&_decaySlider);
-    facetedLookAndFeel.registerSlider(&_sustainSlider);
-    facetedLookAndFeel.registerSlider(&_releaseSlider);
+
+
+    // Look And Feel
+    _attackSlider.setLookAndFeel(&customLookAndFeel);
+    _decaySlider.setLookAndFeel(&customLookAndFeel);
+    _sustainSlider.setLookAndFeel(&customLookAndFeel);
+    _releaseSlider.setLookAndFeel(&customLookAndFeel);
+
+    _partialModeComboBox.setLookAndFeel(&crystalComboLF);
 
     // Graphics Timer
     startTimerHz(30); // 30 fps
@@ -175,11 +170,23 @@ CustomAudioEditor::~CustomAudioEditor()
     _decaySlider.setLookAndFeel(nullptr);
     _sustainSlider.setLookAndFeel(nullptr);
     _releaseSlider.setLookAndFeel(nullptr);
+
+    _partialModeComboBox.setLookAndFeel(&crystalComboLF);
 }
 
 void CustomAudioEditor::paint (Graphics& g)
 {
-    g.fillAll(Colours::white);
+    // Gradient from top-left to bottom-right
+    juce::ColourGradient gradient(
+        juce::Colour::fromRGB(200, 255, 150),  // Light lime
+        0, 0,
+        juce::Colour::fromRGB(100, 200, 100),  // Rich lime green
+        (float)getWidth(), (float)getHeight(),
+        false
+    );
+
+    g.setGradientFill(gradient);
+    g.fillAll();
 }
 
 void CustomAudioEditor::audioProcessorParameterChanged(juce::AudioProcessor*, int parameterIndex, float newValue)
@@ -217,8 +224,10 @@ void CustomAudioEditor::timerCallback()
     _titleLabel.setColour(juce::Label::textColourId, pulsingColour);
 
     // Paint our sliders
-    _attackSlider.repaint();
-    _decaySlider.repaint();
-    _sustainSlider.repaint();
-    _releaseSlider.repaint();
+    if (_pulseCounter % 10 == 0) {
+        _attackSlider.repaint();
+        _decaySlider.repaint();
+        _sustainSlider.repaint();
+        _releaseSlider.repaint();
+    }
 }
