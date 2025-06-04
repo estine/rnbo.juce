@@ -1,9 +1,10 @@
 #include "JuceHeader.h"
 #include "RNBO.h"
 #include "RNBO_JuceAudioProcessor.h"
-// #include "FacetedCrystalLookAndFeel.h"
-#include "CrystallineSliderLookAndFeel.h"
-#include "CrystallineComboBoxLookAndFeel.h"
+#include "EsmwLookAndFeel.h"
+#include "EsmwADSRDisplay.h"
+#include "EsmwButtonGroup.h"
+#include "CrystalPitchVisualizer.h"
 
 class CustomAudioEditor : public AudioProcessorEditor, private AudioProcessorListener, public juce::Timer
 {
@@ -19,8 +20,10 @@ private:
     void audioProcessorParameterChanged(AudioProcessor*, int parameterIndex, float) override;
 
     // Look and Feel
-    CrystallineSliderLookAndFeel customLookAndFeel;
-    CrystallineComboBoxLookAndFeel crystalComboLF;
+    EsmwLookAndFeel customLookAndFeel;
+    EsmwADSRDisplay adsrDisplay;
+    EsmwButtonGroup buttonGroup;
+    CrystalPitchVisualizer pitchViz;
 
     // Title
 
@@ -47,7 +50,6 @@ private:
     // Timer Stuff
 
     int _pulseCounter = 0;
-    juce::Colour _baseTitleColour = juce::Colours::purple;
 
 protected:
     AudioProcessor                              *_audioProcessor;
