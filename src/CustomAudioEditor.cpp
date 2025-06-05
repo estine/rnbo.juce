@@ -7,7 +7,7 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
     , _audioProcessor(p)
 {
     _audioProcessor->AudioProcessor::addListener(this);
-    setSize (300, 500); // Make resizeable in the future
+    setSize (400, 450); // Make resizeable in the future
 
     // --- GUI Elements ---
 
@@ -33,17 +33,6 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
     addAndMakeVisible(_adsrLabel);
 
     addAndMakeVisible(_adsrDisplay);
-
-    auto updateADSRDisplay = [this]()
-        {
-            _adsrDisplay.setEnvelope((float)juce::jmap((float)_attackSlider.getValue(), 0.1f, 2000.0f, 0.0f, 1.0f),
-                (float)juce::jmap((float)_decaySlider.getValue(), 0.1f, 2000.0f, 0.0f, 1.0f),
-                (float)_sustainSlider.getValue(),
-                (float)juce::jmap((float)_releaseSlider.getValue(), 0.1f, 2000.0f, 0.0f, 1.0f));
-        };
-
-    // Initial update to set visual correctly at launch
-    updateADSRDisplay();
 
     // --- Attack ---
     _attackSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
@@ -139,11 +128,14 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
 
     addAndMakeVisible(_partialButtonGroup);
 
+    _partialModeIndex = _rnboObject.getParameterIndexForID("partialMode");
+
     // This changes the combobox contents based on an enum ???
     _partialButtonGroup.onChange = [this]() {
-        int selectedId = _partialButtonGroup.getSelectedIndex();
-        if (_partialModeIndex != RNBO::INVALID_INDEX)
-            _rnboObject.setParameterValue(_partialModeIndex, static_cast<float>(selectedId - 1));
+        int selected = _partialButtonGroup.getSelectedIndex(); // should be 0, 1, or 2
+        if (_partialModeIndex != RNBO::INVALID_INDEX) {
+            _rnboObject.setParameterValue(_partialModeIndex, static_cast<float>(selected));
+        }
         };
 
     // make visible different knobs based on mode
@@ -293,7 +285,7 @@ CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::C
         true);
     _thirdPartialSemitone.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
     _thirdPartialSemitone.setRange(0, 36, 1);
-    _thirdPartialSemitone.setValue(12);
+    _thirdPartialSemitone.setValue(24);
     _thirdPartialSemitone.onValueChange = [this]() {
         if (auto index = _rnboObject.getParameterIndexForID("thirdPartialSemitoneOffset"); index >= 0) {
             _rnboObject.setParameterValue(index, (float)_thirdPartialSemitone.getValue());
@@ -532,7 +524,7 @@ void CustomAudioEditor::audioProcessorParameterChanged(juce::AudioProcessor*, in
             _releaseSlider.setValue(newValue, juce::dontSendNotification);
         } else if (paramId == "partialMode")
     {
-        int id = static_cast<int>(newValue) + 1; // combo IDs start at 1
+        int id = static_cast<int>(newValue); // combo IDs start at 1
         //_partialModeComboBox.setSelectedId(id, juce::dontSendNotification);
         // This is needed
     }
@@ -549,7 +541,7 @@ void CustomAudioEditor::timerCallback()
 
     _titleLabel.setColour(juce::Label::textColourId, pulsingColour);
 
-    // ADSR Visualization
+    // ADSR Visualization - do this somewhere else in the future
     _adsrDisplay.setEnvelope((float)juce::jmap((float)_attackSlider.getValue(), 0.1f, 2000.0f, 0.0f, 1.0f),
         (float)juce::jmap((float)_decaySlider.getValue(), 0.1f, 2000.0f, 0.0f, 1.0f),
         (float)_sustainSlider.getValue(),
