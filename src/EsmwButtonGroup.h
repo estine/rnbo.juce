@@ -27,6 +27,9 @@ public:
                         onSelectionChanged(selectedIndex);
 
                     repaint(); // optional, if your UI doesn’t auto-repaint
+
+                    if (onChange)  // Call the external handler, if it's set
+                        onChange();
                 };
         }
 
@@ -53,6 +56,8 @@ public:
 
     std::function<void(int)> onSelectionChanged;
     int getSelectedIndex() const { return selectedIndex; }
+
+    std::function<void()> onChange;
 
 private:
     juce::OwnedArray<juce::TextButton> buttons;

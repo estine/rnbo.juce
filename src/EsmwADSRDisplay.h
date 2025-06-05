@@ -21,9 +21,13 @@ public:
         g.fillAll(juce::Colours::transparentWhite);
         g.setColour(juce::Colours::black);
 
+        float margin = 0.99f;
+
         auto bounds = getLocalBounds().toFloat();
-        float width = bounds.getWidth()-10;
-        float height = bounds.getHeight()-10;
+        float width = bounds.getWidth()*margin;
+        float height = bounds.getHeight()*margin;
+
+        float bottom = bounds.getHeight() - height;
 
         // Total duration units = a + d + r + fixed sustain portion
         float sustainLength = 0.3f; // fixed horizontal length for sustain
@@ -32,20 +36,20 @@ public:
 
         float scaleX = width / total;
 
-        float x0 = 0.0f;
+        float x0 = bottom;
         float y0 = height;
 
         float x1 = x0 + attack * scaleX;
-        float y1 = 0.0f;
+        float y1 = bottom;
 
         float x2 = x1 + decay * scaleX;
-        float y2 = height * (1.0f - sustain); // sustain height
+        float y2 = bottom + height * (1.0f - sustain); // sustain height
 
         float x3 = x2 + sustainLength * scaleX;
         float y3 = y2;
 
         float x4 = x3 + release * scaleX;
-        float y4 = height;
+        float y4 = bottom + height;
 
         juce::Path env;
         env.startNewSubPath(x0, y0);

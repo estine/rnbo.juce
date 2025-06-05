@@ -141,7 +141,7 @@ public:
         g.drawRect(area);
     }
 
-    // --- TextButton painting ---
+    // === TextButton painting ===
     void drawButtonBackground(juce::Graphics& g, juce::Button& button,
         const juce::Colour&, bool, bool) override
     {

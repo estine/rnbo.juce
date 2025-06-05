@@ -6,105 +6,103 @@ class CrystalPitchVisualizer : public juce::Component
 public:
     CrystalPitchVisualizer()
     {
-        setOpaque(false);
+        for (int i = 0; i < 3; ++i)
+        {
+            pitches[i] = 0.5f;
+            intensities[i] = 0.0f;
+        }
     }
 
-    // Pitches and intensities expected to be normalized (0..1)
-    void setPitches(float low, float mid, float high,
-        float lowIntensity, float midIntensity, float highIntensity)
+    void setPitchAndIntensity(int index, float pitch, float intensity)
     {
-        pitches[0] = juce::jlimit(0.f, 1.f, low);
-        pitches[1] = juce::jlimit(0.f, 1.f, mid);
-        pitches[2] = juce::jlimit(0.f, 1.f, high);
-
-        intensities[0] = juce::jlimit(0.f, 1.f, lowIntensity);
-        intensities[1] = juce::jlimit(0.f, 1.f, midIntensity);
-        intensities[2] = juce::jlimit(0.f, 1.f, highIntensity);
-
-        repaint();
+        if (index >= 0 && index < 3)
+        {
+            pitches[index] = juce::jlimit(0.0f, 1.0f, pitch);
+            intensities[index] = juce::jlimit(0.0f, 1.0f, intensity);
+            repaint();
+        }
     }
 
     void paint(juce::Graphics& g) override
     {
-        auto w = (float)getWidth();
-        auto h = (float)getHeight();
-        auto centerX = w * 0.5f;
-        auto baseY = h * 0.9f;
-        auto topY = h * 0.1f;
-        auto midY = (topY + baseY) * 0.5f;
-        auto sideWidth = w * 0.2f;
+        auto bounds = getLocalBounds().toFloat();
+        g.fillAll(juce::Colours::transparentBlack);
 
-        // Define points for crystal shape
-        juce::Point<float> top(centerX, topY);
-        juce::Point<float> left(centerX - sideWidth, midY);
-        juce::Point<float> right(centerX + sideWidth, midY);
-        juce::Point<float> bottomLeft(centerX - sideWidth * 0.7f, baseY);
-        juce::Point<float> bottomRight(centerX + sideWidth * 0.7f, baseY);
-        juce::Point<float> bottom(centerX, baseY);
+        const float w = bounds.getWidth();
+        const float h = bounds.getHeight();
 
-        // Draw crystal shape outline and fill
-        juce::Path crystal;
-        crystal.startNewSubPath(top);
-        crystal.lineTo(left);
-        crystal.lineTo(bottomLeft);
-        crystal.lineTo(bottom);
-        crystal.lineTo(bottomRight);
-        crystal.lineTo(right);
-        crystal.closeSubPath();
+        // Points for top and body
+        juce::Point<float> top(w / 2.0f, 0.0f);
+        juce::Point<float> bottomLeft(w * 0.25f, h);
+        juce::Point<float> bottomRight(w * 0.75f, h);
+        juce::Point<float> midLeft(w * 0.25f, h * 0.5f);
+        juce::Point<float> midRight(w * 0.75f, h * 0.5f);
+        juce::Point<float> centerBottom(w / 2.0f, h);
 
-        g.setColour(juce::Colours::white.withAlpha(0.05f));
-        g.fillPath(crystal);
+        // Outline paths
+        juce::Path outline;
+        outline.startNewSubPath(top);
+        outline.lineTo(midLeft);
+        outline.lineTo(bottomLeft);
+        outline.lineTo(centerBottom);
+        outline.lineTo(bottomRight);
+        outline.lineTo(midRight);
+        outline.lineTo(top);
+
+        // Inner verticals
+        outline.startNewSubPath(midLeft);
+        outline.lineTo(centerBottom);
+        outline.startNewSubPath(midRight);
+        outline.lineTo(centerBottom);
 
         g.setColour(juce::Colours::black);
-        g.strokePath(crystal, juce::PathStrokeType(1.0f));
+        g.strokePath(outline, juce::PathStrokeType(2.0f));
 
-        // Draw glowing "markers" on edges:
-        // Edges to highlight:
-        //   left edge: from top to left
-        //   bottom edge: from bottomLeft to bottomRight
-        //   right edge: from top to right
-
-        drawGlowingMarkerOnEdge(g, top, left, pitches[0], intensities[0]);         // low pitch on left edge
-        drawGlowingMarkerOnEdge(g, bottomLeft, bottomRight, pitches[1], intensities[1]); // mid pitch on bottom edge
-        drawGlowingMarkerOnEdge(g, top, right, pitches[2], intensities[2]);       // high pitch on right edge
+        // Draw glowing lines
+        drawGlowingLine(g, midLeft, bottomLeft, pitches[0], intensities[0], juce::Colours::red);   // Left
+        drawGlowingLine(g, midLeft, midRight, pitches[1], intensities[1], juce::Colours::green);   // Front
+        drawGlowingLine(g, midRight, bottomRight, pitches[2], intensities[2], juce::Colours::blue); // Right
     }
 
-private:
-    float pitches[3] = { 0.f, 0.f, 0.f };
-    float intensities[3] = { 0.f, 0.f, 0.f };
-
-    void drawGlowingMarkerOnEdge(juce::Graphics& g,
-        juce::Point<float> start,
-        juce::Point<float> end,
-        float positionNorm, // 0..1 along edge
-        float intensity)    // 0..1 glow strength
+    void setNote(int index, int midiNoteNumber, int velocity)
     {
-        if (intensity <= 0.01f)
-            return;
+        // Clamp values and store them
+        if (index < 0 || index >= 3) return;
 
-        positionNorm = juce::jlimit(0.f, 1.f, positionNorm);
+        // Convert MIDI note number to frequency
+        float freq = 440.0f * std::pow(2.0f, (midiNoteNumber - 69) / 12.0f);
+        float intensity = juce::jlimit(0.0f, 1.0f, velocity / 127.0f);
 
-        juce::Point<float> pointOnEdge = start + (end - start) * positionNorm;
+        pitches[index] = freq;
+        intensities[index] = intensity;
 
-        juce::Point<float> edgeVec = end - start;
-        juce::Point<float> perpVec(-edgeVec.y, edgeVec.x);
-        perpVec = perpVec / perpVec.getDistanceFromOrigin();
+        repaint();
+    }
 
-        float markerLength = 10.0f + 15.0f * intensity;
 
-        juce::Point<float> markerStart = pointOnEdge - perpVec * markerLength * 0.5f;
-        juce::Point<float> markerEnd = pointOnEdge + perpVec * markerLength * 0.5f;
+private:
+    float pitches[3];
+    float intensities[3];
 
-        // Draw glow
-        juce::Path glowPath;
-        glowPath.startNewSubPath(markerStart);
-        glowPath.lineTo(markerEnd);
+    void drawGlowingLine(juce::Graphics& g,
+        juce::Point<float> top, juce::Point<float> bottom,
+        float normY, float intensity, juce::Colour baseColour)
+    {
+        if (intensity <= 0.01f) return;
 
-        g.setColour(juce::Colours::white.withAlpha(0.15f * intensity));
-        g.strokePath(glowPath, juce::PathStrokeType(6.0f * intensity));
+        auto faceHeight = bottom.getY() - top.getY();
+        float y = top.getY() + (1.0f - normY) * faceHeight;
+        float x1 = top.getX();
+        float x2 = bottom.getX();
 
-        // Draw inner bright line
-        g.setColour(juce::Colours::white.withAlpha(0.9f * intensity));
-        g.strokePath(glowPath, juce::PathStrokeType(2.0f));
+        juce::Colour glow = baseColour.withAlpha(juce::jlimit(0.05f, 1.0f, intensity));
+
+        for (int i = 4; i >= 0; --i)
+        {
+            float thickness = (float)i * 2.0f + 1.0f;
+            float alpha = glow.getFloatAlpha() * (1.0f - i * 0.2f);
+            g.setColour(glow.withAlpha(alpha));
+            g.drawLine({ x1, y, x2, y }, thickness);
+        }
     }
 };

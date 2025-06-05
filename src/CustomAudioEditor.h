@@ -21,8 +21,8 @@ private:
 
     // Look and Feel
     EsmwLookAndFeel customLookAndFeel;
-    EsmwADSRDisplay adsrDisplay;
-    EsmwButtonGroup buttonGroup;
+    EsmwADSRDisplay _adsrDisplay;
+    
     CrystalPitchVisualizer pitchViz;
 
     // Title
@@ -31,6 +31,11 @@ private:
     juce::Label _creatorLabel;
 
     // GUI Elements
+
+    // ADSR
+
+    juce::Label _adsrLabel;
+
     juce::Slider _attackSlider;
     juce::Label _attackLabel;
 
@@ -43,9 +48,50 @@ private:
     juce::Slider _releaseSlider;
     juce::Label _releaseLabel;
 
+    // Partial Modes
+    EsmwButtonGroup _partialButtonGroup{ { "semi", "ratio", "freq" } };
     RNBO::ParameterIndex _partialModeIndex = RNBO::INVALID_INDEX;
-    juce::ComboBox _partialModeComboBox;
     juce::Label _partialModeLabel;
+
+    // second partial
+
+    juce::Label _secondPartialLabel;
+
+    // todo: labels for these, too
+    juce::Slider _secondPartialSemitone;
+    juce::Label _secondPartialSemitoneLabel;
+
+    juce::Slider _secondPartialRatio;
+    juce::Label _secondPartialRatioLabel;
+
+    juce::Slider _secondPartialFreq;
+    juce::Label _secondPartialFreqLabel;
+
+    juce::Slider _secondPartialAmp;
+    juce::Label _secondPartialAmpLabel;
+
+    juce::Slider _secondPartialDecay;
+    juce::Label _secondPartialDecayLabel;
+
+    // third partial
+
+    juce::Label _thirdPartialLabel;
+
+    // todo: labels for these, too
+    juce::Slider _thirdPartialSemitone;
+    juce::Label _thirdPartialSemitoneLabel;
+
+    juce::Slider _thirdPartialRatio;
+    juce::Label _thirdPartialRatioLabel;
+
+    juce::Slider _thirdPartialFreq;
+    juce::Label _thirdPartialFreqLabel;
+
+    juce::Slider _thirdPartialAmp;
+    juce::Label _thirdPartialAmpLabel;
+
+    juce::Slider _thirdPartialDecay;
+    juce::Label _thirdPartialDecayLabel;
 
     // Timer Stuff
 
